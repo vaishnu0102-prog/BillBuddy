@@ -1,19 +1,20 @@
 function Navbar() {
   return (
-    <nav>
-      <div>
-        <h2>BillBuddy</h2>
+    <nav className="navbar">
+      <div className="navbar-logo">
+        <span className="logo-mark">B</span>
+        <span>BillBuddy</span>
       </div>
 
-      <div>
+      <div className="navbar-links">
         <a href="#features">Features</a>
         <a href="#how-it-works">How It Works</a>
         <a href="#about">About</a>
       </div>
 
-      <div>
-        <button>Login</button>
-        <button>Get Started</button>
+      <div className="navbar-actions">
+        <button className="btn btn-ghost">Login</button>
+        <button className="btn btn-primary">Get Started</button>
       </div>
     </nav>
   );
