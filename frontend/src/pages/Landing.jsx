@@ -407,6 +407,137 @@ function Landing() {
 
         </section>
 
+        {/* ================================
+    FINAL CTA
+================================ */}
+
+<section className="cta-section">
+
+  <div className="cta-card">
+
+    <div className="cta-content">
+
+      <p className="section-label">
+        READY TO GET STARTED?
+      </p>
+
+      <h2>
+        Stop calculating.
+        <br />
+        <span>Start splitting.</span>
+      </h2>
+
+      <p>
+        Bring all your shared expenses together
+        and make splitting bills ridiculously simple.
+      </p>
+
+      <button className="btn cta-button">
+        Create Your Free Account →
+      </button>
+
+    </div>
+
+  </div>
+
+</section>
+
+
+{/* ================================
+    FOOTER
+================================ */}
+
+<footer className="footer" id="about">
+
+  <div className="footer-content">
+
+    <div className="footer-brand">
+
+      <div className="navbar-logo">
+
+        <span className="logo-mark">
+          B
+        </span>
+
+        <span>
+          BillBuddy
+        </span>
+
+      </div>
+
+      <p>
+        Shared expenses,
+        simplified.
+      </p>
+
+    </div>
+
+
+    <div className="footer-links">
+
+      <div>
+
+        <h4>Product</h4>
+
+        <a href="#features">
+          Features
+        </a>
+
+        <a href="#how-it-works">
+          How It Works
+        </a>
+
+      </div>
+
+
+      <div>
+
+        <h4>Company</h4>
+
+        <a href="#about">
+          About
+        </a>
+
+        <a href="#">
+          Contact
+        </a>
+
+      </div>
+
+
+      <div>
+
+        <h4>Account</h4>
+
+        <a href="#">
+          Login
+        </a>
+
+        <a href="#">
+          Get Started
+        </a>
+
+      </div>
+
+    </div>
+
+  </div>
+
+
+  <div className="footer-bottom">
+
+    <span>
+      © 2026 BillBuddy. All rights reserved.
+    </span>
+
+    <span>
+      Built with ❤️ for simpler expenses.
+    </span>
+
+  </div>
+
+</footer>
+
       </main>
 
     </div>
