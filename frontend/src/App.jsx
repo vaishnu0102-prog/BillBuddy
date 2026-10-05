@@ -1,10 +1,7 @@
+import Landing from './pages/Landing';
+
 function App() {
-  return (
-    <div>
-      <h1>BillBuddy</h1>
-      <p>Your smart expense companion.</p>
-    </div>
-  );
+  return <Landing />;
 }
 
 export default App;
