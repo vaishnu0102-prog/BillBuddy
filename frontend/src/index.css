@@ -1047,3 +1047,311 @@ a {
   }
 
 }
+
+/* ================================
+   AUTHENTICATION
+================================ */
+
+.auth-page {
+  min-height: 100vh;
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  padding: 40px 20px;
+
+  position: relative;
+  overflow: hidden;
+
+  background: #f8f9fc;
+}
+
+
+/* ================================
+   MONEY PATTERN BACKGROUND
+================================ */
+
+.auth-page::before {
+  content:
+    "₹     $     ₹     $     ₹     $     ₹     $     ₹     $     ₹\A"
+    "   $     ₹     $     ₹     $     ₹     $     ₹     $     ₹\A"
+    "₹     $     ₹     $     ₹     $     ₹     $     ₹     $     ₹\A"
+    "   $     ₹     $     ₹     $     ₹     $     ₹     $     ₹\A"
+    "₹     $     ₹     $     ₹     $     ₹     $     ₹     $     ₹\A"
+    "   $     ₹     $     ₹     $     ₹     $     ₹     $     ₹\A"
+    "₹     $     ₹     $     ₹     $     ₹     $     ₹     $     ₹\A"
+    "   $     ₹     $     ₹     $     ₹     $     ₹     $     ₹\A"
+    "₹     $     ₹     $     ₹     $     ₹     $     ₹     $     ₹\A"
+    "   $     ₹     $     ₹     $     ₹     $     ₹     $     ₹\A"
+    "₹     $     ₹     $     ₹     $     ₹     $     ₹     $     ₹";
+
+  position: absolute;
+  inset: -100px;
+
+  z-index: 0;
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  white-space: pre;
+
+  font-size: 34px;
+  line-height: 4;
+  letter-spacing: 18px;
+
+  color: rgba(99, 102, 241, 0.18);
+
+  transform: rotate(-8deg);
+
+  pointer-events: none;
+}
+
+/* ================================
+   AUTH CARD
+================================ */
+
+.auth-card {
+  position: relative;
+
+  z-index: 1;
+
+  width: 100%;
+  max-width: 440px;
+
+  padding: 42px;
+
+  background: #ffffff;
+
+  border: 1px solid #e8eaf0;
+
+  border-radius: 24px;
+
+  box-shadow:
+    0 20px 60px rgba(20, 25, 45, 0.08);
+}
+
+/* Brand */
+
+.auth-brand {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+  margin-bottom: 38px;
+  color: #151a2b;
+  font-size: 22px;
+  font-weight: 700;
+  text-decoration: none;
+}
+
+.brand-icon {
+  width: 36px;
+  height: 36px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 10px;
+  background: #6366f1;
+  color: white;
+  font-weight: 700;
+}
+
+/* Heading */
+
+.auth-heading {
+  text-align: center;
+  margin-bottom: 32px;
+}
+
+.auth-heading h1 {
+  margin: 0 0 10px;
+  color: #151a2b;
+  font-size: 30px;
+  line-height: 1.2;
+}
+
+.auth-heading p {
+  margin: 0;
+  color: #6b7280;
+  font-size: 15px;
+}
+
+/* Form */
+
+.auth-form {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+}
+
+.form-group {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.form-group label {
+  color: #252a3a;
+  font-size: 14px;
+  font-weight: 600;
+}
+
+.form-group input {
+  width: 100%;
+  box-sizing: border-box;
+  padding: 13px 15px;
+  border: 1px solid #dfe2ea;
+  border-radius: 10px;
+  outline: none;
+  background: #fff;
+  color: #151a2b;
+  font-size: 15px;
+  transition: 0.2s ease;
+}
+
+.form-group input:focus {
+  border-color: #6366f1;
+  box-shadow: 0 0 0 3px rgba(99, 102, 241, 0.1);
+}
+
+.password-label {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.password-label a {
+  color: #6366f1;
+  font-size: 13px;
+  font-weight: 600;
+  text-decoration: none;
+}
+
+/* Login button */
+
+.auth-submit {
+  width: 100%;
+  margin-top: 4px;
+  border: none;
+  cursor: pointer;
+}
+
+/* Divider */
+
+.auth-divider {
+  display: flex;
+  align-items: center;
+  gap: 15px;
+  margin: 28px 0;
+  color: #9ca3af;
+  font-size: 12px;
+  font-weight: 600;
+}
+
+.auth-divider::before,
+.auth-divider::after {
+  content: "";
+  flex: 1;
+  height: 1px;
+  background: #e5e7eb;
+}
+
+/* Google */
+
+.google-btn {
+  width: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+  padding: 13px;
+  border: 1px solid #dfe2ea;
+  border-radius: 10px;
+  background: white;
+  color: #252a3a;
+  font-size: 14px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: 0.2s ease;
+}
+
+.google-btn:hover {
+  background: #f8f9fc;
+  border-color: #cdd1dc;
+}
+
+.google-icon {
+  font-size: 18px;
+  font-weight: 700;
+}
+
+/* Signup link */
+
+.auth-switch {
+  margin: 28px 0 0;
+  text-align: center;
+  color: #6b7280;
+  font-size: 14px;
+}
+
+.auth-switch a {
+  color: #6366f1;
+  font-weight: 600;
+  text-decoration: none;
+}
+
+/* Mobile */
+
+@media (max-width: 520px) {
+  .auth-page {
+    padding: 20px 15px;
+  }
+
+  .auth-card {
+    padding: 30px 22px;
+    border-radius: 18px;
+  }
+
+  .auth-heading h1 {
+    font-size: 26px;
+  }
+}
+
+/* ================================
+   PASSWORD VISIBILITY TOGGLE
+================================ */
+
+.password-input-wrapper {
+  position: relative;
+}
+
+.password-input-wrapper input {
+  padding-right: 48px;
+}
+
+.password-toggle {
+  position: absolute;
+  top: 50%;
+  right: 14px;
+
+  transform: translateY(-50%);
+
+  border: none;
+  background: transparent;
+
+  padding: 4px;
+
+  cursor: pointer;
+
+  font-size: 17px;
+
+  opacity: 0.65;
+
+  transition: opacity 0.2s ease;
+}
+
+.password-toggle:hover {
+  opacity: 1;
+}
