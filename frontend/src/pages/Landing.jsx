@@ -1,4 +1,5 @@
 import Navbar from '../components/Navbar';
+import { Link } from 'react-router-dom';
 
 function Landing() {
   return (
@@ -32,9 +33,9 @@ function Landing() {
             </p>
 
             <div className="hero-actions">
-              <button className="btn btn-primary btn-large">
+              <Link to="/signup" className="btn btn-primary btn-large">
                 Get Started →
-              </button>
+              </Link>
 
               <button className="btn btn-outline btn-large">
                 See How It Works
