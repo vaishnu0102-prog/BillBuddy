@@ -198,10 +198,16 @@ function Signup() {
         </div>
 
         {/* Google */}
-        <button className="google-btn">
-          <span className="google-icon">G</span>
-          Continue with Google
-        </button>
+        <button
+  type="button"
+  className="google-btn"
+  onClick={() => {
+    window.location.href = "http://localhost:5001/api/auth/google";
+  }}
+>
+  <span className="google-icon">G</span>
+  Continue with Google
+</button>
 
         {/* Login */}
         <p className="auth-switch">
