@@ -35,34 +35,37 @@ function Login() {
           </div>
 
           <div className="form-group">
+
             <div className="password-label">
-              <label htmlFor="password">Password</label>
+            <label htmlFor="password">Password</label>
 
-              <Link to="/forgot-password">
-                Forgot password?
-              </Link>
-            </div>
-           </div> 
+            <Link to="/forgot-password">
+               Forgot password?
+            </Link>
+          </div>
 
-            <div className="password-input-wrapper">
+          <div className="password-input-wrapper">
 
+          <input
+          type={showPassword ? 'text' : 'password'}
+          id="password"
+          placeholder="Enter your password"
+          />
 
-            <input
-            type={showPassword ? 'text' : 'password'}
-            id="password"
-            placeholder="Enter your password"
-            />
-
-            <button
-            type="button"
-            className="password-toggle"
-            onClick={() => setShowPassword(!showPassword)}
-            aria-label={showPassword ? 'Hide password' : 'Show password'}
-           >
-            {showPassword ? '🙈' : '👁'}
-            </button>
+          <button
+          type="button"
+          className="password-toggle"
+          onClick={() => setShowPassword(!showPassword)}
+          aria-label={
+          showPassword ? 'Hide password' : 'Show password'
+          }
+          >
+          {showPassword ? '🙈' : '👁'}
+          </button>
 
           </div>
+
+         </div>
 
           <button
             type="submit"

@@ -1,10 +1,68 @@
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 import { useState } from 'react';
 
 function Signup() {
+  const navigate = useNavigate();
+
   const [showPassword, setShowPassword] = useState(false);
   const [showConfirmPassword, setShowConfirmPassword] = useState(false);
-  
+
+  const [name, setName] = useState('');
+  const [email, setEmail] = useState('');
+  const [password, setPassword] = useState('');
+  const [confirmPassword, setConfirmPassword] = useState('');
+
+  const [error, setError] = useState('');
+  const [loading, setLoading] = useState(false);
+
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+
+    setError('');
+
+    // Check passwords
+    if (password !== confirmPassword) {
+      setError('Passwords do not match.');
+      return;
+    }
+
+    setLoading(true);
+
+    try {
+      const response = await fetch(
+        'http://localhost:5001/api/auth/register',
+        {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify({
+            name,
+            email,
+            password,
+          }),
+        }
+      );
+
+      const data = await response.json();
+
+      if (!response.ok) {
+        setError(data.message || 'Registration failed.');
+        return;
+      }
+
+      alert('Account created successfully! 🎉');
+
+      navigate('/login');
+
+    } catch (error) {
+      console.error('Signup error:', error);
+      setError('Unable to connect to the server.');
+    } finally {
+      setLoading(false);
+    }
+  };
+
   return (
     <div className="auth-page">
 
@@ -23,7 +81,7 @@ function Signup() {
         </div>
 
         {/* Signup Form */}
-        <form className="auth-form">
+        <form className="auth-form" onSubmit={handleSubmit}>
 
           <div className="form-group">
             <label htmlFor="name">
@@ -34,9 +92,11 @@ function Signup() {
               type="text"
               id="name"
               placeholder="Your name"
+              value={name}
+              onChange={(e) => setName(e.target.value)}
+              required
             />
           </div>
-
 
           <div className="form-group">
             <label htmlFor="signup-email">
@@ -47,9 +107,11 @@ function Signup() {
               type="email"
               id="signup-email"
               placeholder="you@example.com"
+              value={email}
+              onChange={(e) => setEmail(e.target.value)}
+              required
             />
           </div>
-
 
           <div className="form-group">
             <label htmlFor="signup-password">
@@ -61,6 +123,9 @@ function Signup() {
                 type={showPassword ? 'text' : 'password'}
                 id="signup-password"
                 placeholder="Create a password"
+                value={password}
+                onChange={(e) => setPassword(e.target.value)}
+                required
               />
 
               <button
@@ -78,7 +143,6 @@ function Signup() {
             </div>
           </div>
 
-
           <div className="form-group">
             <label htmlFor="confirm-password">
               Confirm Password
@@ -89,6 +153,9 @@ function Signup() {
                 type={showConfirmPassword ? 'text' : 'password'}
                 id="confirm-password"
                 placeholder="Confirm your password"
+                value={confirmPassword}
+                onChange={(e) => setConfirmPassword(e.target.value)}
+                required
               />
 
               <button
@@ -108,29 +175,33 @@ function Signup() {
             </div>
           </div>
 
+          {/* Error message */}
+          {error && (
+            <p className="auth-error">
+              {error}
+            </p>
+          )}
 
           <button
             type="submit"
             className="btn btn-primary auth-submit"
+            disabled={loading}
           >
-            Create Account →
+            {loading ? 'Creating Account...' : 'Create Account →'}
           </button>
 
         </form>
-
 
         {/* Divider */}
         <div className="auth-divider">
           <span>OR</span>
         </div>
 
-
         {/* Google */}
         <button className="google-btn">
           <span className="google-icon">G</span>
           Continue with Google
         </button>
-
 
         {/* Login */}
         <p className="auth-switch">
