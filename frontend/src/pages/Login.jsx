@@ -1,8 +1,62 @@
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 import { useState } from 'react';
 
 function Login() {
   const [showPassword, setShowPassword] = useState(false);
+  const [email, setEmail] = useState('');
+  const [password, setPassword] = useState('');
+  const [error, setError] = useState('');
+  const [loading, setLoading] = useState(false);
+
+  const navigate = useNavigate();
+
+  // ===============================
+  // Login Handler
+  // ===============================
+
+  const handleLogin = async (e) => {
+    e.preventDefault();
+
+    setError('');
+    setLoading(true);
+
+    try {
+      const response = await fetch('http://localhost:5001/api/auth/login', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          email,
+          password,
+        }),
+      });
+
+      const data = await response.json();
+
+      if (!response.ok) {
+        setError(data.message || 'Login failed');
+        return;
+      }
+
+      console.log('Login successful:', data);
+
+// Store JWT
+localStorage.setItem('token', data.token);
+
+// Store user information
+localStorage.setItem('user', JSON.stringify(data.user));
+
+// Redirect to dashboard
+navigate('/dashboard');
+
+    } catch (error) {
+      console.error('Login error:', error);
+      setError('Unable to connect to the server');
+    } finally {
+      setLoading(false);
+    }
+  };
 
   return (
     <div className="auth-page">
@@ -22,8 +76,9 @@ function Login() {
         </div>
 
         {/* Login Form */}
-        <form className="auth-form">
+        <form className="auth-form" onSubmit={handleLogin}>
 
+          {/* Email */}
           <div className="form-group">
             <label htmlFor="email">Email</label>
 
@@ -31,47 +86,61 @@ function Login() {
               type="email"
               id="email"
               placeholder="you@example.com"
+              value={email}
+              onChange={(e) => setEmail(e.target.value)}
             />
           </div>
 
+          {/* Password */}
           <div className="form-group">
 
             <div className="password-label">
-            <label htmlFor="password">Password</label>
+              <label htmlFor="password">Password</label>
 
-            <Link to="/forgot-password">
-               Forgot password?
-            </Link>
+              <Link to="/forgot-password">
+                Forgot password?
+              </Link>
+            </div>
+
+            <div className="password-input-wrapper">
+
+              <input
+                type={showPassword ? 'text' : 'password'}
+                id="password"
+                placeholder="Enter your password"
+                value={password}
+                onChange={(e) => setPassword(e.target.value)}
+              />
+
+              <button
+                type="button"
+                className="password-toggle"
+                onClick={() => setShowPassword(!showPassword)}
+                aria-label={
+                  showPassword ? 'Hide password' : 'Show password'
+                }
+              >
+                {showPassword ? '🙈' : '👁'}
+              </button>
+
+            </div>
+
           </div>
 
-          <div className="password-input-wrapper">
+          {/* Error Message */}
+          {error && (
+            <p className="auth-error">
+              {error}
+            </p>
+          )}
 
-          <input
-          type={showPassword ? 'text' : 'password'}
-          id="password"
-          placeholder="Enter your password"
-          />
-
-          <button
-          type="button"
-          className="password-toggle"
-          onClick={() => setShowPassword(!showPassword)}
-          aria-label={
-          showPassword ? 'Hide password' : 'Show password'
-          }
-          >
-          {showPassword ? '🙈' : '👁'}
-          </button>
-
-          </div>
-
-         </div>
-
+          {/* Login Button */}
           <button
             type="submit"
             className="btn btn-primary auth-submit"
+            disabled={loading}
           >
-            Log In →
+            {loading ? 'Logging in...' : 'Log In →'}
           </button>
 
         </form>
