@@ -66,6 +66,7 @@ const registerUser = async (req, res) => {
   }
 };
 
+
 // ===============================
 // Normal Login
 // ===============================
@@ -147,6 +148,7 @@ const loginUser = async (req, res) => {
   }
 };
 
+
 // ===============================
 // Start Google Authentication
 // ===============================
@@ -208,7 +210,11 @@ const googleLogin = async (req, res) => {
       [googleId, email]
     );
 
-    // Existing user
+
+    // ===============================
+    // Existing User
+    // ===============================
+
     if (existingUser.rows.length > 0) {
       const user = existingUser.rows[0];
 
@@ -220,27 +226,60 @@ const googleLogin = async (req, res) => {
         );
       }
 
+      // Create JWT for Google login
+      const token = jwt.sign(
+        {
+          userId: user.id,
+          email: user.email
+        },
+        process.env.JWT_SECRET,
+        {
+          expiresIn: "7d"
+        }
+      );
+
+      // Send token to frontend
       return res.redirect(
-        "http://localhost:5173/login?google=success"
+        `http://localhost:5173/login?google=success&token=${encodeURIComponent(token)}`
       );
     }
 
-    // New Google user
-    await pool.query(
+
+    // ===============================
+    // New Google User
+    // ===============================
+
+    const newUser = await pool.query(
       `INSERT INTO users (name, email, password_hash, google_id)
-       VALUES ($1, $2, $3, $4)`,
+       VALUES ($1, $2, $3, $4)
+       RETURNING id, name, email`,
       [name, email, null, googleId]
     );
 
+    const user = newUser.rows[0];
+
+    // Create JWT for new Google user
+    const token = jwt.sign(
+      {
+        userId: user.id,
+        email: user.email
+      },
+      process.env.JWT_SECRET,
+      {
+        expiresIn: "7d"
+      }
+    );
+
+    // Send token to frontend
     return res.redirect(
-      "http://localhost:5173/login?google=success"
+      `http://localhost:5173/login?google=success&token=${encodeURIComponent(token)}`
     );
 
   } catch (error) {
     console.error("Google authentication error:", error);
 
     return res.redirect(
-      "http://localhost:5173/signup?google=error"
+      "http://localhost:5173/login?google=error"
     );
   }
 };

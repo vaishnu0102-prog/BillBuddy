@@ -133,6 +133,40 @@ a {
   gap: 10px;
 }
 
+.navbar-login {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+
+  padding: 10px 17px;
+
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-md);
+
+  color: var(--color-text);
+  text-decoration: none;
+
+  font-size: 14px;
+  font-weight: 600;
+
+  background: transparent;
+
+  transition:
+    background 0.2s ease,
+    border-color 0.2s ease,
+    transform 0.2s ease;
+}
+
+.navbar-login:hover {
+  background: #eef2ff;
+  border-color: #c7d2fe;
+  transform: translateY(-1px);
+}
+
+.navbar-login svg {
+  flex-shrink: 0;
+}
+
 
 /* ================================
    BUTTONS
@@ -1354,4 +1388,432 @@ a {
 
 .password-toggle:hover {
   opacity: 1;
+}
+
+/* ================================
+   GROUP DETAILS
+================================ */
+
+.group-details-page {
+  min-height: 100vh;
+  background: var(--color-background);
+}
+
+
+/* ================================
+   HEADER
+================================ */
+
+.group-details-header {
+  max-width: 1200px;
+  margin: 0 auto;
+
+  padding: 32px;
+
+  display: flex;
+  align-items: flex-end;
+  justify-content: space-between;
+
+  gap: 30px;
+}
+
+.group-header-left {
+  display: flex;
+  flex-direction: column;
+  gap: 22px;
+}
+
+.back-link {
+  width: fit-content;
+
+  color: var(--color-text-secondary);
+
+  font-size: 14px;
+  font-weight: 500;
+
+  transition: color 0.2s ease;
+}
+
+.back-link:hover {
+  color: var(--color-primary);
+}
+
+.group-title-section {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+}
+
+.group-title-icon {
+  width: 58px;
+  height: 58px;
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  background: #eef2ff;
+
+  border-radius: 16px;
+
+  font-size: 27px;
+}
+
+.group-title-section h1 {
+  font-size: 32px;
+  line-height: 1.2;
+
+  margin-bottom: 5px;
+}
+
+.group-title-section p {
+  color: var(--color-text-secondary);
+
+  font-size: 14px;
+}
+
+.group-add-expense {
+  white-space: nowrap;
+}
+
+
+/* ================================
+   CONTENT
+================================ */
+
+.group-details-content {
+  max-width: 1200px;
+  margin: 0 auto;
+
+  padding: 10px 32px 80px;
+}
+
+
+/* ================================
+   SUMMARY
+================================ */
+
+.group-summary-grid {
+  display: grid;
+
+  grid-template-columns: repeat(3, 1fr);
+
+  gap: 18px;
+
+  margin-bottom: 30px;
+}
+
+.group-summary-card {
+  padding: 24px;
+
+  background: var(--color-surface);
+
+  border: 1px solid var(--color-border);
+
+  border-radius: var(--radius-lg);
+
+  box-shadow: var(--shadow-sm);
+}
+
+.group-summary-card span {
+  display: block;
+
+  color: var(--color-text-secondary);
+
+  font-size: 13px;
+
+  margin-bottom: 9px;
+}
+
+.group-summary-card strong {
+  display: block;
+
+  font-size: 25px;
+
+  margin-bottom: 5px;
+}
+
+.group-summary-card small {
+  color: var(--color-text-muted);
+
+  font-size: 12px;
+}
+
+.balance-negative {
+  color: var(--color-danger);
+}
+
+
+/* ================================
+   SECTIONS
+================================ */
+
+.group-section {
+  background: var(--color-surface);
+
+  border: 1px solid var(--color-border);
+
+  border-radius: var(--radius-lg);
+
+  margin-bottom: 20px;
+
+  overflow: hidden;
+}
+
+.group-section-header {
+  padding: 22px 24px;
+
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+
+  border-bottom: 1px solid var(--color-border);
+}
+
+.group-section-header h2 {
+  font-size: 18px;
+
+  margin-bottom: 3px;
+}
+
+.group-section-header p {
+  color: var(--color-text-secondary);
+
+  font-size: 12px;
+}
+
+.section-action {
+  border: none;
+
+  background: transparent;
+
+  color: var(--color-primary);
+
+  font-size: 13px;
+  font-weight: 600;
+}
+
+.section-action:hover {
+  color: var(--color-primary-hover);
+}
+
+
+/* ================================
+   EXPENSES
+================================ */
+
+.expense-list {
+  padding: 4px 24px;
+}
+
+.expense-item {
+  display: flex;
+  align-items: center;
+
+  gap: 14px;
+
+  padding: 17px 0;
+
+  border-bottom: 1px solid var(--color-border);
+}
+
+.expense-item:last-child {
+  border-bottom: none;
+}
+
+.expense-icon {
+  width: 42px;
+  height: 42px;
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  background: #f8fafc;
+
+  border-radius: 12px;
+
+  font-size: 20px;
+}
+
+.expense-info {
+  flex: 1;
+}
+
+.expense-info strong,
+.expense-info span {
+  display: block;
+}
+
+.expense-info strong {
+  font-size: 14px;
+
+  margin-bottom: 3px;
+}
+
+.expense-info span {
+  color: var(--color-text-muted);
+
+  font-size: 12px;
+}
+
+.expense-amount {
+  font-size: 14px;
+
+  font-weight: 700;
+}
+
+
+/* ================================
+   MEMBERS
+================================ */
+
+.members-list {
+  padding: 4px 24px;
+}
+
+.member-item {
+  display: flex;
+  align-items: center;
+
+  gap: 14px;
+
+  padding: 16px 0;
+
+  border-bottom: 1px solid var(--color-border);
+}
+
+.member-item:last-child {
+  border-bottom: none;
+}
+
+.member-avatar {
+  width: 40px;
+  height: 40px;
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  border-radius: 50%;
+
+  background: #eef2ff;
+
+  color: var(--color-primary);
+
+  font-size: 14px;
+  font-weight: 700;
+}
+
+.member-info {
+  flex: 1;
+}
+
+.member-info strong,
+.member-info span {
+  display: block;
+}
+
+.member-info strong {
+  font-size: 14px;
+}
+
+.member-info > span {
+  color: var(--color-text-muted);
+
+  font-size: 11px;
+
+  margin-top: 2px;
+}
+
+.you-badge {
+  display: inline-block !important;
+
+  margin-left: 7px;
+
+  padding: 2px 7px;
+
+  border-radius: 999px;
+
+  background: #eef2ff;
+
+  color: var(--color-primary) !important;
+
+  font-size: 10px !important;
+}
+
+.member-balance {
+  font-size: 12px;
+
+  font-weight: 600;
+}
+
+.member-balance.negative {
+  color: var(--color-danger);
+}
+
+.member-balance.positive {
+  color: var(--color-success);
+}
+
+.member-balance.settled {
+  color: var(--color-text-muted);
+}
+
+
+/* ================================
+   RESPONSIVE
+================================ */
+
+@media (max-width: 800px) {
+
+  .group-details-header {
+    align-items: flex-start;
+
+    flex-direction: column;
+  }
+
+  .group-add-expense {
+    width: 100%;
+  }
+
+  .group-summary-grid {
+    grid-template-columns: 1fr;
+  }
+
+}
+
+
+@media (max-width: 600px) {
+
+  .group-details-header {
+    padding: 24px 20px;
+  }
+
+  .group-details-content {
+    padding: 10px 20px 60px;
+  }
+
+  .group-title-section h1 {
+    font-size: 26px;
+  }
+
+  .group-section-header {
+    padding: 18px;
+  }
+
+  .expense-list,
+  .members-list {
+    padding-left: 18px;
+    padding-right: 18px;
+  }
+
+  .expense-item {
+    gap: 10px;
+  }
+
+  .expense-amount {
+    font-size: 13px;
+  }
+
 }
