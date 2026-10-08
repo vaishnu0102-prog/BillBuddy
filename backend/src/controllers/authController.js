@@ -1,4 +1,5 @@
 const bcrypt = require("bcrypt");
+const jwt = require("jsonwebtoken");
 const { OAuth2Client } = require("google-auth-library");
 const pool = require("../config/database");
 
@@ -65,6 +66,86 @@ const registerUser = async (req, res) => {
   }
 };
 
+// ===============================
+// Normal Login
+// ===============================
+
+const loginUser = async (req, res) => {
+  try {
+    const { email, password } = req.body;
+
+    // Check required fields
+    if (!email || !password) {
+      return res.status(400).json({
+        status: "error",
+        message: "Email and password are required"
+      });
+    }
+
+    // Find user by email
+    const result = await pool.query(
+      `SELECT id, name, email, password_hash
+       FROM users
+       WHERE email = $1`,
+      [email]
+    );
+
+    // User not found
+    if (result.rows.length === 0) {
+      return res.status(401).json({
+        status: "error",
+        message: "Invalid email or password"
+      });
+    }
+
+    const user = result.rows[0];
+
+    // Check password
+    const passwordMatch = await bcrypt.compare(
+      password,
+      user.password_hash
+    );
+
+    if (!passwordMatch) {
+      return res.status(401).json({
+        status: "error",
+        message: "Invalid email or password"
+      });
+    }
+
+    // Create JWT
+    const token = jwt.sign(
+      {
+        userId: user.id,
+        email: user.email
+      },
+      process.env.JWT_SECRET,
+      {
+        expiresIn: "7d"
+      }
+    );
+
+    // Login successful
+    res.status(200).json({
+      status: "success",
+      message: "Login successful",
+      token,
+      user: {
+        id: user.id,
+        name: user.name,
+        email: user.email
+      }
+    });
+
+  } catch (error) {
+    console.error("Login error:", error);
+
+    res.status(500).json({
+      status: "error",
+      message: "Something went wrong while logging in"
+    });
+  }
+};
 
 // ===============================
 // Start Google Authentication
@@ -171,6 +252,7 @@ const googleLogin = async (req, res) => {
 
 module.exports = {
   registerUser,
+  loginUser,
   startGoogleAuth,
   googleLogin
 };
