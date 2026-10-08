@@ -1,5 +1,5 @@
 import { Link, useNavigate } from 'react-router-dom';
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 
 function Login() {
   const [showPassword, setShowPassword] = useState(false);
@@ -9,6 +9,52 @@ function Login() {
   const [loading, setLoading] = useState(false);
 
   const navigate = useNavigate();
+
+  // ===============================
+  // Handle Google Login Callback
+  // ===============================
+
+  useEffect(() => {
+    const params = new URLSearchParams(window.location.search);
+
+    const googleStatus = params.get('google');
+    const token = params.get('token');
+
+    // Google login successful
+    if (googleStatus === 'success' && token) {
+      try {
+        // Store JWT
+        localStorage.setItem('token', token);
+
+        // Remove token from URL
+        window.history.replaceState(
+          {},
+          document.title,
+          '/login'
+        );
+
+        // Redirect to dashboard
+        navigate('/dashboard', { replace: true });
+
+      } catch (error) {
+        console.error('Google login error:', error);
+        setError('Google login failed');
+      }
+    }
+
+    // Google login failed
+    if (googleStatus === 'error') {
+      setError('Google login failed. Please try again.');
+
+      // Remove error from URL
+      window.history.replaceState(
+        {},
+        document.title,
+        '/login'
+      );
+    }
+  }, [navigate]);
+
 
   // ===============================
   // Login Handler
@@ -21,16 +67,19 @@ function Login() {
     setLoading(true);
 
     try {
-      const response = await fetch('http://localhost:5001/api/auth/login', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({
-          email,
-          password,
-        }),
-      });
+      const response = await fetch(
+        'http://localhost:5001/api/auth/login',
+        {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify({
+            email,
+            password,
+          }),
+        }
+      );
 
       const data = await response.json();
 
@@ -41,22 +90,31 @@ function Login() {
 
       console.log('Login successful:', data);
 
-// Store JWT
-localStorage.setItem('token', data.token);
+      // Store JWT
+      localStorage.setItem('token', data.token);
 
-// Store user information
-localStorage.setItem('user', JSON.stringify(data.user));
+      // Store user information
+      localStorage.setItem(
+        'user',
+        JSON.stringify(data.user)
+      );
 
-// Redirect to dashboard
-navigate('/dashboard');
+      // Redirect to dashboard
+      navigate('/dashboard');
 
     } catch (error) {
       console.error('Login error:', error);
       setError('Unable to connect to the server');
+
     } finally {
       setLoading(false);
     }
   };
+
+
+  // ===============================
+  // Component UI
+  // ===============================
 
   return (
     <div className="auth-page">
@@ -69,18 +127,29 @@ navigate('/dashboard');
           <span>BillBuddy</span>
         </Link>
 
+
         {/* Heading */}
         <div className="auth-heading">
           <h1>Welcome back 👋</h1>
-          <p>Log in to manage your shared expenses.</p>
+
+          <p>
+            Log in to manage your shared expenses.
+          </p>
         </div>
 
+
         {/* Login Form */}
-        <form className="auth-form" onSubmit={handleLogin}>
+        <form
+          className="auth-form"
+          onSubmit={handleLogin}
+        >
 
           {/* Email */}
           <div className="form-group">
-            <label htmlFor="email">Email</label>
+
+            <label htmlFor="email">
+              Email
+            </label>
 
             <input
               type="email"
@@ -89,35 +158,53 @@ navigate('/dashboard');
               value={email}
               onChange={(e) => setEmail(e.target.value)}
             />
+
           </div>
+
 
           {/* Password */}
           <div className="form-group">
 
             <div className="password-label">
-              <label htmlFor="password">Password</label>
+
+              <label htmlFor="password">
+                Password
+              </label>
 
               <Link to="/forgot-password">
                 Forgot password?
               </Link>
+
             </div>
+
 
             <div className="password-input-wrapper">
 
               <input
-                type={showPassword ? 'text' : 'password'}
+                type={
+                  showPassword
+                    ? 'text'
+                    : 'password'
+                }
                 id="password"
                 placeholder="Enter your password"
                 value={password}
-                onChange={(e) => setPassword(e.target.value)}
+                onChange={(e) =>
+                  setPassword(e.target.value)
+                }
               />
+
 
               <button
                 type="button"
                 className="password-toggle"
-                onClick={() => setShowPassword(!showPassword)}
+                onClick={() =>
+                  setShowPassword(!showPassword)
+                }
                 aria-label={
-                  showPassword ? 'Hide password' : 'Show password'
+                  showPassword
+                    ? 'Hide password'
+                    : 'Show password'
                 }
               >
                 {showPassword ? '🙈' : '👁'}
@@ -127,6 +214,7 @@ navigate('/dashboard');
 
           </div>
 
+
           {/* Error Message */}
           {error && (
             <p className="auth-error">
@@ -134,32 +222,53 @@ navigate('/dashboard');
             </p>
           )}
 
+
           {/* Login Button */}
           <button
             type="submit"
             className="btn btn-primary auth-submit"
             disabled={loading}
           >
-            {loading ? 'Logging in...' : 'Log In →'}
+            {loading
+              ? 'Logging in...'
+              : 'Log In →'}
           </button>
 
         </form>
+
 
         {/* Divider */}
         <div className="auth-divider">
           <span>OR</span>
         </div>
 
+
         {/* Google */}
-        <button className="google-btn">
-          <span className="google-icon">G</span>
+        <button
+          type="button"
+          className="google-btn"
+          onClick={() => {
+            window.location.href =
+              'http://localhost:5001/api/auth/google';
+          }}
+        >
+          <span className="google-icon">
+            G
+          </span>
+
           Continue with Google
         </button>
 
+
         {/* Signup */}
         <p className="auth-switch">
+
           Don't have an account?
-          <Link to="/signup"> Sign up</Link>
+
+          <Link to="/signup">
+            {' '}Sign up
+          </Link>
+
         </p>
 
       </div>
