@@ -1827,3 +1827,374 @@ a {
   font-size: 14px;
   margin: 0;
 }
+
+
+/* =====================================
+   PERSONAL EXPENSES
+===================================== */
+
+.personal-expenses-page {
+  min-height: 100vh;
+  padding: 40px 32px 80px;
+  background: var(--color-background);
+}
+
+.expenses-header {
+  max-width: 1200px;
+  margin: 0 auto 32px;
+}
+
+.expenses-header h1 {
+  font-size: 32px;
+  margin: 18px 0 6px;
+  letter-spacing: -0.03em;
+}
+
+.expenses-header p {
+  color: var(--color-text-secondary);
+  font-size: 14px;
+}
+
+.expenses-error {
+  max-width: 1200px;
+  margin: 0 auto 20px;
+  padding: 12px 16px;
+  color: var(--color-danger);
+  background: #fef2f2;
+  border: 1px solid #fecaca;
+  border-radius: var(--radius-md);
+}
+
+/* Summary Cards */
+
+.summary-grid {
+  max-width: 1200px;
+  margin: 0 auto 28px;
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 18px;
+}
+
+.personal-expenses-page .summary-card {
+  padding: 25px;
+  background: var(--color-surface);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-lg);
+  box-shadow: var(--shadow-sm);
+}
+
+.personal-expenses-page .summary-card span {
+  color: var(--color-text-secondary);
+  font-size: 13px;
+  display: block;
+  margin-bottom: 12px;
+}
+
+.personal-expenses-page .summary-card h2 {
+  font-size: 26px;
+  letter-spacing: -0.03em;
+}
+
+.personal-expenses-page .income-card h2 {
+  color: var(--color-success);
+}
+
+.personal-expenses-page .expense-card h2 {
+  color: var(--color-danger);
+}
+
+.personal-expenses-page .balance-card {
+  background: var(--color-primary);
+  color: white;
+}
+
+.personal-expenses-page .balance-card span {
+  color: rgba(255, 255, 255, 0.8);
+}
+
+.personal-expenses-page .balance-card h2 {
+  color: white;
+}
+
+/* Form Section */
+
+.transaction-form-section,
+.transactions-section {
+  max-width: 1200px;
+  margin: 0 auto 24px;
+  padding: 26px;
+  background: var(--color-surface);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-lg);
+  box-shadow: var(--shadow-sm);
+}
+
+.transaction-form-section h2,
+.transactions-section h2 {
+  font-size: 19px;
+  margin-bottom: 20px;
+}
+
+.transaction-form {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 20px;
+}
+
+.transaction-form label {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  font-size: 13px;
+  font-weight: 600;
+  color: var(--color-text);
+}
+
+.transaction-form input,
+.transaction-form select,
+.transactions-heading input {
+  width: 100%;
+  min-width: 0;
+  padding: 12px 14px;
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-md);
+  background: white;
+  color: var(--color-text);
+  outline: none;
+  font-size: 13px;
+  transition: 0.2s ease;
+}
+
+.transaction-form input:focus,
+.transaction-form select:focus,
+.transactions-heading input:focus {
+  border-color: var(--color-primary);
+  box-shadow: 0 0 0 3px rgba(99, 102, 241, 0.1);
+}
+
+.form-actions {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  grid-column: 1 / -1;
+}
+
+.form-actions button {
+  padding: 12px 20px;
+  border: none;
+  border-radius: var(--radius-md);
+  background: var(--color-primary);
+  color: white;
+  font-weight: 600;
+  font-size: 13px;
+}
+
+.form-actions button:hover {
+  background: var(--color-primary-hover);
+}
+
+.form-actions button:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+}
+
+.form-actions .cancel-button {
+  background: #f3f4f6;
+  color: var(--color-text);
+}
+
+/* Transaction History */
+
+.transactions-heading {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 20px;
+}
+
+.transactions-heading h2 {
+  margin-bottom: 4px;
+}
+
+.transactions-heading p {
+  color: var(--color-text-secondary);
+  font-size: 13px;
+  margin-bottom: 20px;
+}
+
+.transactions-heading input {
+  max-width: 300px;
+  margin-bottom: 20px;
+}
+
+.filter-buttons {
+  display: flex;
+  gap: 10px;
+  margin-bottom: 20px;
+}
+
+.filter-buttons button {
+  padding: 9px 17px;
+  border: 1px solid var(--color-border);
+  border-radius: 999px;
+  background: white;
+  color: var(--color-text-secondary);
+  font-size: 13px;
+  font-weight: 600;
+}
+
+.filter-buttons button.active {
+  background: #eef2ff;
+  color: var(--color-primary);
+  border-color: #c7d2fe;
+}
+
+/* Table */
+
+.transaction-table-wrapper {
+  width: 100%;
+  overflow-x: auto;
+}
+
+.transaction-table {
+  width: 100%;
+  border-collapse: collapse;
+  text-align: left;
+  white-space: nowrap;
+}
+
+.transaction-table th {
+  padding: 15px 12px;
+  background: #f8fafc;
+  color: var(--color-text-secondary);
+  font-size: 12px;
+  font-weight: 600;
+}
+
+.transaction-table td {
+  padding: 16px 12px;
+  border-bottom: 1px solid var(--color-border);
+  font-size: 13px;
+}
+
+.transaction-table tbody tr:hover {
+  background: #fafaff;
+}
+
+.type-label {
+  display: inline-block;
+  padding: 5px 10px;
+  border-radius: 999px;
+  font-size: 11px;
+  font-weight: 600;
+  text-transform: capitalize;
+}
+
+.type-label.income {
+  background: #dcfce7;
+  color: #15803d;
+}
+
+.type-label.expense {
+  background: #fee2e2;
+  color: #b91c1c;
+}
+
+.amount-income {
+  color: var(--color-success);
+  font-weight: 700;
+}
+
+.amount-expense {
+  color: var(--color-danger);
+  font-weight: 700;
+}
+
+.table-actions {
+  display: flex;
+  gap: 8px;
+}
+
+.table-actions button {
+  padding: 6px 10px;
+  border: 1px solid var(--color-border);
+  border-radius: 7px;
+  background: white;
+  font-size: 11px;
+  font-weight: 600;
+}
+
+.table-actions button:hover {
+  background: #eef2ff;
+  color: var(--color-primary);
+}
+
+.table-actions .delete-button:hover {
+  background: #fef2f2;
+  color: var(--color-danger);
+}
+
+.empty-transactions {
+  padding: 45px 20px;
+  text-align: center;
+}
+
+.empty-transactions h3 {
+  font-size: 17px;
+  margin-bottom: 8px;
+}
+
+.empty-transactions p {
+  color: var(--color-text-secondary);
+  font-size: 13px;
+}
+
+/* Responsive */
+
+@media (max-width: 900px) {
+  .summary-grid {
+    grid-template-columns: 1fr 1fr;
+  }
+
+  .transaction-form {
+    grid-template-columns: 1fr 1fr;
+  }
+}
+
+@media (max-width: 600px) {
+  .personal-expenses-page {
+    padding: 25px 16px 50px;
+  }
+
+  .expenses-header h1 {
+    font-size: 26px;
+  }
+
+  .summary-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .transaction-form {
+    grid-template-columns: 1fr;
+  }
+
+  .transaction-form-section,
+  .transactions-section {
+    padding: 19px;
+  }
+
+  .transactions-heading {
+    align-items: stretch;
+    flex-direction: column;
+    gap: 0;
+  }
+
+  .transactions-heading input {
+    max-width: 100%;
+  }
+
+  .form-actions {
+    flex-wrap: wrap;
+  }
+}
+

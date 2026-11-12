@@ -7,6 +7,7 @@ import Signup from './pages/Signup.jsx';
 import ForgotPassword from './pages/ForgotPassword.jsx';
 import ResetPassword from './pages/ResetPassword.jsx';
 import Dashboard from './pages/Dashboard.jsx';
+import PersonalExpenses from './pages/PersonalExpenses.jsx';
 import Groups from './pages/Groups.jsx';
 import GroupDetails from './pages/GroupDetails.jsx';
 
@@ -55,6 +56,15 @@ function App() {
             </ProtectedRoute>
           }
         />
+
+        <Route
+  path="/personal-expenses"
+  element={
+    <ProtectedRoute>
+      <PersonalExpenses />
+    </ProtectedRoute>
+  }
+/>
 
         <Route
           path="/groups"

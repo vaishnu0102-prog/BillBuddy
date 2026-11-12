@@ -11,6 +11,7 @@ const cors = require("cors");
 const pool = require("./config/database");
 
 const authRoutes = require("./routes/authRoutes");
+const expenseRoutes = require("./routes/expenseRoutes");
 const groupRoutes = require("./routes/groupRoutes");
 
 const app = express();
@@ -23,6 +24,7 @@ app.use(express.json());
 
 // Routes
 app.use("/api/auth", authRoutes);
+app.use("/api/expenses", expenseRoutes);
 app.use("/api/groups", groupRoutes);
 
 // Test route
