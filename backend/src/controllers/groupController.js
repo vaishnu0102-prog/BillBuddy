@@ -1,3 +1,4 @@
+
 const pool = require("../config/database");
 
 const createGroup = async (req, res) => {
@@ -21,7 +22,6 @@ const createGroup = async (req, res) => {
 
     const group = result.rows[0];
 
-    // Automatically add the creator as a group member
     await pool.query(
       `INSERT INTO group_members (group_id, user_id)
        VALUES ($1, $2)`,
@@ -44,12 +44,13 @@ const createGroup = async (req, res) => {
   }
 };
 
+
 const getMyGroups = async (req, res) => {
   try {
     const userId = req.user.userId;
 
     const result = await pool.query(
-      `SELECT 
+      `SELECT
          g.id,
          g.name,
          g.created_by,
@@ -77,7 +78,75 @@ const getMyGroups = async (req, res) => {
   }
 };
 
+
+// Get details of one group and its members
+const getGroupDetails = async (req, res) => {
+  try {
+    const userId = req.user.userId;
+    const groupId = Number(req.params.groupId);
+
+    if (!Number.isInteger(groupId) || groupId <= 0) {
+      return res.status(400).json({
+        status: "error",
+        message: "Invalid group ID"
+      });
+    }
+
+    // Check whether the logged-in user belongs to this group
+    const groupResult = await pool.query(
+      `SELECT
+         g.id,
+         g.name,
+         g.created_by,
+         g.created_at
+       FROM groups g
+       INNER JOIN group_members gm
+         ON g.id = gm.group_id
+       WHERE g.id = $1
+         AND gm.user_id = $2`,
+      [groupId, userId]
+    );
+
+    if (groupResult.rows.length === 0) {
+      return res.status(404).json({
+        status: "error",
+        message: "Group not found or you are not a member"
+      });
+    }
+
+    // Fetch actual group members
+    const membersResult = await pool.query(
+      `SELECT
+         u.id,
+         u.name,
+         gm.joined_at
+       FROM group_members gm
+       INNER JOIN users u
+         ON gm.user_id = u.id
+       WHERE gm.group_id = $1
+       ORDER BY gm.joined_at ASC`,
+      [groupId]
+    );
+
+    res.status(200).json({
+      status: "success",
+      group: groupResult.rows[0],
+      members: membersResult.rows
+    });
+
+  } catch (error) {
+    console.error("Get group details error:", error);
+
+    res.status(500).json({
+      status: "error",
+      message: "Something went wrong while fetching group details"
+    });
+  }
+};
+
+
 module.exports = {
   createGroup,
-  getMyGroups
+  getMyGroups,
+  getGroupDetails
 };
