@@ -2,6 +2,7 @@
 import { useEffect, useMemo, useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import api from "../api";
+import ThemeToggle from "../components/ThemeToggle";
 
 function Dashboard() {
   const navigate = useNavigate();
@@ -124,15 +125,19 @@ function Dashboard() {
 
         <div className="home-nav-links">
           <Link to="/dashboard" className="nav-active">
-            Home
+            Dashboard
           </Link>
           <Link to="/personal-expenses">Personal Expenses</Link>
           <Link to="/groups">Groups</Link>
         </div>
 
-        <button className="home-logout" onClick={handleLogout}>
-          Logout
-        </button>
+        <div className="home-nav-actions">
+  <ThemeToggle />
+
+  <button className="home-logout" onClick={handleLogout}>
+    Logout
+  </button>
+</div>
       </nav>
 
       <main className="home-content">
