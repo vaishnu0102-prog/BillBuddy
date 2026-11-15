@@ -14,6 +14,7 @@ const authRoutes = require("./routes/authRoutes");
 const expenseRoutes = require("./routes/expenseRoutes");
 const groupRoutes = require("./routes/groupRoutes");
 const groupExpenseRoutes = require("./routes/groupExpenseRoutes");
+const groupBalanceRoutes = require("./routes/groupBalanceRoutes");
 
 const app = express();
 
@@ -37,6 +38,7 @@ app.use("/api/auth", authRoutes);
 app.use("/api/expenses", expenseRoutes);
 app.use("/api/groups", groupRoutes);
 app.use("/api/group-expenses", groupExpenseRoutes);
+app.use("/api/group-balances", groupBalanceRoutes);
 
 // Test route
 app.get("/", (req, res) => {
