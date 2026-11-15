@@ -1,4 +1,3 @@
-
 import { Link, useNavigate, useParams } from "react-router-dom";
 import { useEffect, useState } from "react";
 import ThemeToggle from "../components/ThemeToggle";
@@ -12,6 +11,9 @@ function GroupDetails() {
   const [group, setGroup] = useState(null);
   const [members, setMembers] = useState([]);
   const [expenses, setExpenses] = useState([]);
+
+  const [selectedExpense, setSelectedExpense] = useState(null);
+  const [showExpenseDetails, setShowExpenseDetails] = useState(false);
 
   const [loading, setLoading] = useState(true);
   const [expensesLoading, setExpensesLoading] = useState(true);
@@ -241,6 +243,17 @@ function GroupDetails() {
     setFormError("");
   };
 
+  // Open and close expense details
+  const openExpenseDetails = (expense) => {
+    setSelectedExpense(expense);
+    setShowExpenseDetails(true);
+  };
+
+  const closeExpenseDetails = () => {
+    setShowExpenseDetails(false);
+    setSelectedExpense(null);
+  };
+
   // Handle form fields
   const handleFormChange = (event) => {
     const { name, value } = event.target;
@@ -349,7 +362,9 @@ function GroupDetails() {
             participant.amount <= 0
         )
       ) {
-        setFormError("Every participant must have a valid share greater than zero.");
+        setFormError(
+          "Every participant must have a valid share greater than zero."
+        );
         return;
       }
 
@@ -375,7 +390,9 @@ function GroupDetails() {
             participant.percentage <= 0
         )
       ) {
-        setFormError("Every participant must have a percentage greater than zero.");
+        setFormError(
+          "Every participant must have a percentage greater than zero."
+        );
         return;
       }
 
@@ -445,7 +462,8 @@ function GroupDetails() {
 
       if (!refreshResponse.ok) {
         throw new Error(
-          refreshData.message || "Expense was saved, but refreshing the list failed."
+          refreshData.message ||
+            "Expense was saved, but refreshing the list failed."
         );
       }
 
@@ -454,7 +472,6 @@ function GroupDetails() {
 
       setShowExpenseModal(false);
       setFormSuccess("");
-
     } catch (err) {
       console.error("Add expense error:", err);
       setFormError(err.message || "Something went wrong.");
@@ -522,7 +539,6 @@ function GroupDetails() {
 
   return (
     <div className="group-details-page">
-
       {/* Shared BillBuddy Navigation */}
       <nav className="home-navbar">
         <Link to="/dashboard" className="home-logo">
@@ -555,7 +571,6 @@ function GroupDetails() {
       </nav>
 
       <main className="group-details-content">
-
         {/* Loading State */}
         {loading && (
           <div className="group-section">
@@ -588,14 +603,12 @@ function GroupDetails() {
           <>
             {/* Group Heading */}
             <header className="group-details-header">
-
               <div className="group-header-left">
                 <Link to="/groups" className="group-back-link">
                   ← Back to Groups
                 </Link>
 
                 <div className="group-title-section">
-
                   <div className="group-title-icon">
                     👥
                   </div>
@@ -611,7 +624,6 @@ function GroupDetails() {
                       Created on {formatDate(group.created_at)}
                     </p>
                   </div>
-
                 </div>
               </div>
 
@@ -621,12 +633,10 @@ function GroupDetails() {
               >
                 + Add Expense
               </button>
-
             </header>
 
             {/* Summary Cards */}
             <section className="group-summary-grid">
-
               <div className="group-summary-card">
                 <span>Total Members</span>
                 <strong>{members.length}</strong>
@@ -658,14 +668,11 @@ function GroupDetails() {
 
                 <small>Created this group</small>
               </div>
-
             </section>
 
             {/* Group Expenses */}
             <section className="group-section">
-
               <div className="group-section-header">
-
                 <div>
                   <h2>Group Expenses</h2>
                   <p>Track expenses shared by group members</p>
@@ -677,11 +684,9 @@ function GroupDetails() {
                 >
                   + Add Expense
                 </button>
-
               </div>
 
               <div className="expense-list">
-
                 {expensesLoading && (
                   <div className="expense-item">
                     <div className="expense-info">
@@ -730,8 +735,21 @@ function GroupDetails() {
                     <div
                       className="expense-item"
                       key={expense.id}
+                      role="button"
+                      tabIndex={0}
+                      aria-label={`View details for ${expense.title}`}
+                      onClick={() => openExpenseDetails(expense)}
+                      onKeyDown={(event) => {
+                        if (
+                          event.key === "Enter" ||
+                          event.key === " "
+                        ) {
+                          event.preventDefault();
+                          openExpenseDetails(expense);
+                        }
+                      }}
+                      style={{ cursor: "pointer" }}
                     >
-
                       <div className="expense-icon">💳</div>
 
                       <div className="expense-info">
@@ -759,17 +777,13 @@ function GroupDetails() {
                       <div className="expense-amount">
                         {formatCurrency(expense.amount)}
                       </div>
-
                     </div>
                   ))}
-
               </div>
-
             </section>
 
             {/* Actual Group Members */}
             <section className="group-section">
-
               <div className="group-section-header">
                 <div>
                   <h2>Members</h2>
@@ -792,13 +806,11 @@ function GroupDetails() {
               </div>
 
               <div className="members-list">
-
                 {members.map((member) => (
                   <div
                     className="member-item"
                     key={member.id}
                   >
-
                     <div className="member-avatar">
                       {member.name?.charAt(0).toUpperCase() || "U"}
                     </div>
@@ -818,12 +830,9 @@ function GroupDetails() {
                         Creator
                       </span>
                     )}
-
                   </div>
                 ))}
-
               </div>
-
             </section>
           </>
         )}
@@ -831,10 +840,8 @@ function GroupDetails() {
         <footer className="group-details-footer">
           © {new Date().getFullYear()} BillBuddy. Manage money smarter.
         </footer>
-
       </main>
-
-      {/* ADD EXPENSE MODAL */}
+            {/* ADD EXPENSE MODAL */}
       {showExpenseModal && (
         <div
           style={modalOverlayStyle}
@@ -844,14 +851,12 @@ function GroupDetails() {
             }
           }}
         >
-
           <div
             style={modalStyle}
             role="dialog"
             aria-modal="true"
             aria-labelledby="add-expense-title"
           >
-
             {/* Modal Header */}
             <div
               style={{
@@ -896,7 +901,6 @@ function GroupDetails() {
             </div>
 
             <form onSubmit={handleAddExpense}>
-
               {/* Expense Title */}
               <div style={fieldStyle}>
                 <label style={labelStyle}>
@@ -923,7 +927,6 @@ function GroupDetails() {
                   gap: "15px",
                 }}
               >
-
                 <div style={fieldStyle}>
                   <label style={labelStyle}>
                     Amount (₹) *
@@ -964,7 +967,6 @@ function GroupDetails() {
                     <option value="Other">Other</option>
                   </select>
                 </div>
-
               </div>
 
               {/* Description */}
@@ -1118,7 +1120,6 @@ function GroupDetails() {
                     overflow: "hidden",
                   }}
                 >
-
                   {members.map((member, index) => {
                     const userId = Number(member.id);
                     const selected =
@@ -1142,7 +1143,6 @@ function GroupDetails() {
                             : "transparent",
                         }}
                       >
-
                         <input
                           type="checkbox"
                           checked={selected}
@@ -1211,14 +1211,13 @@ function GroupDetails() {
                                   padding: "8px",
                                 }}
                               />
+
                               <span style={mutedStyle}>%</span>
                             </div>
                           )}
-
                       </div>
                     );
                   })}
-
                 </div>
               </div>
 
@@ -1350,7 +1349,6 @@ function GroupDetails() {
                         </strong>
                       </div>
                     )}
-
                   </div>
                 )}
 
@@ -1432,8 +1430,287 @@ function GroupDetails() {
                     : "Add Expense"}
                 </button>
               </div>
-
             </form>
+          </div>
+        </div>
+      )}
+            {/* EXPENSE DETAILS MODAL */}
+      {showExpenseDetails && selectedExpense && (
+        <div
+          style={modalOverlayStyle}
+          onMouseDown={(event) => {
+            if (event.target === event.currentTarget) {
+              closeExpenseDetails();
+            }
+          }}
+        >
+          <div
+            style={{ ...modalStyle, maxWidth: "560px" }}
+            role="dialog"
+            aria-modal="true"
+            aria-labelledby="expense-details-title"
+          >
+            {/* Modal Header */}
+            <div
+              style={{
+                display: "flex",
+                justifyContent: "space-between",
+                gap: "15px",
+                marginBottom: "24px",
+              }}
+            >
+              <div>
+                <span
+                  style={{
+                    ...mutedStyle,
+                    letterSpacing: "1px",
+                    fontWeight: 700,
+                    fontSize: "11px",
+                  }}
+                >
+                  GROUP EXPENSE DETAILS
+                </span>
+
+                <h2
+                  id="expense-details-title"
+                  style={{
+                    fontSize: "23px",
+                    margin: "7px 0 0",
+                  }}
+                >
+                  {selectedExpense.title}
+                </h2>
+              </div>
+
+              <button
+                type="button"
+                onClick={closeExpenseDetails}
+                aria-label="Close expense details"
+                style={{
+                  border: "none",
+                  background: "transparent",
+                  color: "var(--text-secondary, #A3AEC2)",
+                  fontSize: "25px",
+                  cursor: "pointer",
+                }}
+              >
+                ×
+              </button>
+            </div>
+
+            {/* Total Amount */}
+            <div
+              style={{
+                padding: "20px",
+                borderRadius: "14px",
+                background: "rgba(139,124,255,0.10)",
+                border: "1px solid rgba(139,124,255,0.25)",
+                marginBottom: "22px",
+              }}
+            >
+              <span style={mutedStyle}>Total expense</span>
+
+              <div
+                style={{
+                  fontSize: "30px",
+                  fontWeight: 750,
+                  marginTop: "6px",
+                }}
+              >
+                {formatCurrency(selectedExpense.amount)}
+              </div>
+            </div>
+
+            {/* Expense Information */}
+            <div
+              style={{
+                display: "grid",
+                gridTemplateColumns: "1fr 1fr",
+                gap: "16px",
+                marginBottom: "24px",
+              }}
+            >
+              {[
+                ["Category", selectedExpense.category || "Other"],
+                ["Date", formatDate(selectedExpense.expense_date)],
+                [
+                  "Paid by",
+                  selectedExpense.paid_by_name ||
+                    `User #${selectedExpense.paid_by}`,
+                ],
+                [
+                  "Split method",
+                  selectedExpense.split_type
+                    ? selectedExpense.split_type.charAt(0).toUpperCase() +
+                      selectedExpense.split_type.slice(1)
+                    : "Not available",
+                ],
+              ].map(([label, value]) => (
+                <div
+                  key={label}
+                  style={{
+                    padding: "13px",
+                    borderRadius: "10px",
+                    background: "var(--input-bg, #1C2940)",
+                    border: "1px solid var(--border-color, #29364C)",
+                    minWidth: 0,
+                  }}
+                >
+                  <div
+                    style={{
+                      ...mutedStyle,
+                      marginBottom: "6px",
+                    }}
+                  >
+                    {label}
+                  </div>
+
+                  <strong
+                    style={{
+                      fontSize: "14px",
+                      overflowWrap: "anywhere",
+                    }}
+                  >
+                    {value}
+                  </strong>
+                </div>
+              ))}
+            </div>
+
+            {/* Description */}
+            {selectedExpense.description && (
+              <div style={{ marginBottom: "23px" }}>
+                <h3
+                  style={{
+                    fontSize: "15px",
+                    margin: "0 0 8px",
+                  }}
+                >
+                  Description
+                </h3>
+
+                <p
+                  style={{
+                    ...mutedStyle,
+                    lineHeight: 1.6,
+                    margin: 0,
+                    whiteSpace: "pre-wrap",
+                  }}
+                >
+                  {selectedExpense.description}
+                </p>
+              </div>
+            )}
+
+            {/* Split Breakdown */}
+            <div>
+              <div
+                style={{
+                  display: "flex",
+                  justifyContent: "space-between",
+                  alignItems: "center",
+                  gap: "10px",
+                  marginBottom: "12px",
+                }}
+              >
+                <h3
+                  style={{
+                    fontSize: "16px",
+                    margin: 0,
+                  }}
+                >
+                  Split breakdown
+                </h3>
+
+                <span style={mutedStyle}>
+                  {selectedExpense.splits?.length || 0} participants
+                </span>
+              </div>
+
+              {selectedExpense.splits?.length > 0 ? (
+                <div
+                  style={{
+                    border: "1px solid var(--border-color, #29364C)",
+                    borderRadius: "12px",
+                    overflow: "hidden",
+                  }}
+                >
+                  {selectedExpense.splits.map((share, index) => (
+                    <div
+                      key={share.user_id}
+                      style={{
+                        display: "flex",
+                        justifyContent: "space-between",
+                        alignItems: "center",
+                        gap: "12px",
+                        padding: "13px 14px",
+                        borderBottom:
+                          index !== selectedExpense.splits.length - 1
+                            ? "1px solid var(--border-color, #29364C)"
+                            : "none",
+                      }}
+                    >
+                      <div style={{ minWidth: 0 }}>
+                        <strong style={{ fontSize: "14px" }}>
+                          {share.name || `User #${share.user_id}`}
+                        </strong>
+
+                        {selectedExpense.split_type === "percentage" &&
+                          share.percentage !== null &&
+                          share.percentage !== undefined && (
+                            <div
+                              style={{
+                                ...mutedStyle,
+                                marginTop: "4px",
+                              }}
+                            >
+                              {Number(share.percentage)}%
+                            </div>
+                          )}
+                      </div>
+
+                      <strong
+                        style={{
+                          fontSize: "14px",
+                          whiteSpace: "nowrap",
+                        }}
+                      >
+                        {formatCurrency(share.share_amount)}
+                      </strong>
+                    </div>
+                  ))}
+                </div>
+              ) : (
+                <p style={mutedStyle}>
+                  Split information is not available for this expense.
+                </p>
+              )}
+            </div>
+
+            {/* Close Button */}
+            <div
+              style={{
+                display: "flex",
+                justifyContent: "flex-end",
+                marginTop: "24px",
+              }}
+            >
+              <button
+                type="button"
+                onClick={closeExpenseDetails}
+                style={{
+                  padding: "11px 20px",
+                  borderRadius: "9px",
+                  border: "none",
+                  background: "#7564F5",
+                  color: "#FFFFFF",
+                  fontWeight: 600,
+                  cursor: "pointer",
+                }}
+              >
+                Close
+              </button>
+            </div>
           </div>
         </div>
       )}
