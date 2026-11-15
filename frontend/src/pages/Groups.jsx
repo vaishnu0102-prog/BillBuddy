@@ -214,7 +214,7 @@ function Groups() {
         <footer className="home-footer">
           <p>© {new Date().getFullYear()} BillBuddy. Manage money smarter.</p>
         </footer>
-        
+
       </main>
     </div>
   );

@@ -23,6 +23,15 @@ const PORT = process.env.PORT || 5001;
 app.use(cors());
 app.use(express.json());
 
+app.use((req, res, next) => {
+  if (req.originalUrl.includes("/group-expenses")) {
+    console.log("Content-Type:", req.headers["content-type"]);
+    console.log("Parsed request body:", req.body);
+  }
+
+  next();
+});
+
 // Routes
 app.use("/api/auth", authRoutes);
 app.use("/api/expenses", expenseRoutes);
