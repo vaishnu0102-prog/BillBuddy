@@ -12,6 +12,16 @@ function GroupDetails() {
   const [members, setMembers] = useState([]);
   const [expenses, setExpenses] = useState([]);
 
+  // Group Balances & Settlements
+const [balances, setBalances] = useState([]);
+const [settlementSuggestions, setSettlementSuggestions] = useState([]);
+const [balancesLoading, setBalancesLoading] = useState(true);
+const [balancesError, setBalancesError] = useState("");
+
+const [settlementLoading, setSettlementLoading] = useState(false);
+const [settlementError, setSettlementError] = useState("");
+const [settlementSuccess, setSettlementSuccess] = useState("");
+
   const [selectedExpense, setSelectedExpense] = useState(null);
   const [showExpenseDetails, setShowExpenseDetails] = useState(false);
 
@@ -160,6 +170,72 @@ function GroupDetails() {
       isMounted = false;
     };
   }, [groupId, navigate, retry]);
+
+// Fetch Group Balances and Settlement Suggestions
+const fetchGroupBalances = async () => {
+  try {
+    setBalancesLoading(true);
+    setBalancesError("");
+
+    const token = localStorage.getItem("token");
+
+    if (!token) {
+      navigate("/login");
+      return;
+    }
+
+    const [balanceResponse, suggestionResponse] = await Promise.all([
+      fetch(
+        `http://localhost:5001/api/group-balances/${groupId}`,
+        {
+          headers: {
+            Authorization: `Bearer ${token}`,
+            "Content-Type": "application/json",
+          },
+        }
+      ),
+
+      fetch(
+        `http://localhost:5001/api/group-balances/${groupId}/suggestions`,
+        {
+          headers: {
+            Authorization: `Bearer ${token}`,
+            "Content-Type": "application/json",
+          },
+        }
+      ),
+    ]);
+
+    const balanceData = await balanceResponse.json();
+    const suggestionData = await suggestionResponse.json();
+
+    if (!balanceResponse.ok) {
+      throw new Error(
+        balanceData.message || "Unable to fetch group balances"
+      );
+    }
+
+    if (!suggestionResponse.ok) {
+      throw new Error(
+        suggestionData.message || "Unable to fetch settlement suggestions"
+      );
+    }
+
+    setBalances(balanceData.balances || []);
+    setSettlementSuggestions(suggestionData.suggestions || []);
+
+  } catch (err) {
+    console.error("Group balance error:", err);
+    setBalancesError(err.message || "Unable to load group balances");
+  } finally {
+    setBalancesLoading(false);
+  }
+};
+
+// Load group balances when the group changes.
+useEffect(() => {
+  fetchGroupBalances();
+}, [groupId, retry]);
 
   // Initialize form when members are loaded
   useEffect(() => {
@@ -669,6 +745,183 @@ function GroupDetails() {
                 <small>Created this group</small>
               </div>
             </section>
+
+
+{/* GROUP BALANCES */}
+<section className="group-section">
+  <div className="group-section-header">
+    <div>
+      <h2>Group Balances</h2>
+      <p>See who paid, who owes, and who gets money back.</p>
+    </div>
+  </div>
+
+  {balancesLoading && (
+    <div className="expense-item">
+      <div className="expense-info">
+        <strong>Loading balances...</strong>
+        <span>Calculating everyone's share.</span>
+      </div>
+    </div>
+  )}
+
+  {!balancesLoading && balancesError && (
+    <div className="expense-item">
+      <div className="expense-info">
+        <strong>Unable to load balances</strong>
+        <span>{balancesError}</span>
+      </div>
+      <button
+        className="group-section-action"
+        onClick={fetchGroupBalances}
+      >
+        Retry
+      </button>
+    </div>
+  )}
+
+  {!balancesLoading && !balancesError && (
+    <>
+      <div
+        style={{
+          display: "grid",
+          gridTemplateColumns: "repeat(auto-fit, minmax(210px, 1fr))",
+          gap: "15px",
+          marginBottom: "22px",
+        }}
+      >
+        {balances.map((member) => {
+          const statusColor =
+            member.balance_status === "gets_back"
+              ? "#34D399"
+              : member.balance_status === "owes"
+              ? "#FB7185"
+              : "#60A5FA";
+
+          const statusText =
+            member.balance_status === "gets_back"
+              ? "Gets back"
+              : member.balance_status === "owes"
+              ? "Owes"
+              : "Settled";
+
+          return (
+            <div
+              key={member.user_id}
+              style={{
+                background: "var(--card-bg, #151E30)",
+                border: "1px solid var(--border-color, #29364C)",
+                borderRadius: "14px",
+                padding: "18px",
+              }}
+            >
+              <div
+                style={{
+                  display: "flex",
+                  justifyContent: "space-between",
+                  alignItems: "center",
+                  gap: "8px",
+                }}
+              >
+                <strong>{member.name}</strong>
+
+                <span
+                  style={{
+                    color: statusColor,
+                    fontSize: "11px",
+                    fontWeight: 700,
+                  }}
+                >
+                  {statusText}
+                </span>
+              </div>
+
+              <div
+                style={{
+                  fontSize: "23px",
+                  fontWeight: 750,
+                  margin: "17px 0",
+                  color: statusColor,
+                }}
+              >
+                {formatCurrency(Math.abs(member.net_balance))}
+              </div>
+
+              <div style={mutedStyle}>
+                Paid: {formatCurrency(member.total_paid)}
+              </div>
+
+              <div style={{ ...mutedStyle, marginTop: "6px" }}>
+                Share: {formatCurrency(member.total_owed)}
+              </div>
+            </div>
+          );
+        })}
+      </div>
+
+      {/* SETTLEMENT SUGGESTIONS */}
+      <div
+        style={{
+          border: "1px solid var(--border-color, #29364C)",
+          borderRadius: "14px",
+          padding: "18px",
+          background: "var(--card-bg, #151E30)",
+        }}
+      >
+        <h3 style={{ margin: "0 0 8px", fontSize: "17px" }}>
+          Settlement Suggestions
+        </h3>
+
+        <p style={{ ...mutedStyle, marginBottom: "16px" }}>
+          Suggested payments to settle everyone's balances.
+        </p>
+
+        {settlementSuggestions.length === 0 ? (
+          <div
+            style={{
+              padding: "15px",
+              borderRadius: "10px",
+              background: "rgba(16,185,129,0.10)",
+              color: "#34D399",
+              fontSize: "14px",
+            }}
+          >
+            ✓ Everyone is settled! No pending payments.
+          </div>
+        ) : (
+          settlementSuggestions.map((suggestion, index) => (
+            <div
+              key={`${suggestion.from_user_id}-${suggestion.to_user_id}-${index}`}
+              style={{
+                display: "flex",
+                justifyContent: "space-between",
+                alignItems: "center",
+                gap: "12px",
+                flexWrap: "wrap",
+                padding: "13px 0",
+                borderBottom:
+                  index !== settlementSuggestions.length - 1
+                    ? "1px solid var(--border-color, #29364C)"
+                    : "none",
+              }}
+            >
+              <div>
+                <strong>{suggestion.from_name}</strong>
+                <span style={mutedStyle}> pays </span>
+                <strong>{suggestion.to_name}</strong>
+              </div>
+
+              <strong style={{ color: "#34D399" }}>
+                {formatCurrency(suggestion.amount)}
+              </strong>
+            </div>
+          ))
+        )}
+      </div>
+    </>
+  )}
+</section>
+
 
             {/* Group Expenses */}
             <section className="group-section">
