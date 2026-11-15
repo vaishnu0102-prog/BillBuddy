@@ -8,13 +8,20 @@ function GroupDetails() {
   const navigate = useNavigate();
 
   const [showMembers, setShowMembers] = useState(false);
+
   const [group, setGroup] = useState(null);
   const [members, setMembers] = useState([]);
+  const [expenses, setExpenses] = useState([]);
+
   const [loading, setLoading] = useState(true);
+  const [expensesLoading, setExpensesLoading] = useState(true);
+
   const [error, setError] = useState("");
+  const [expensesError, setExpensesError] = useState("");
+
   const [retry, setRetry] = useState(0);
 
-  // Fetch actual group details from the backend
+  // Fetch actual group details
   useEffect(() => {
     let isMounted = true;
 
@@ -73,12 +80,74 @@ function GroupDetails() {
     };
   }, [groupId, navigate, retry]);
 
+  // Fetch actual group expenses
+  useEffect(() => {
+    let isMounted = true;
+
+    const fetchGroupExpenses = async () => {
+      try {
+        setExpensesLoading(true);
+        setExpensesError("");
+
+        const token = localStorage.getItem("token");
+
+        if (!token) {
+          navigate("/login");
+          return;
+        }
+
+        const response = await fetch(
+          `http://localhost:5001/api/group-expenses/${groupId}`,
+          {
+            method: "GET",
+            headers: {
+              Authorization: `Bearer ${token}`,
+              "Content-Type": "application/json",
+            },
+          }
+        );
+
+        const data = await response.json();
+
+        if (!response.ok) {
+          throw new Error(
+            data.message || "Unable to fetch group expenses"
+          );
+        }
+
+        if (isMounted) {
+          setExpenses(data.expenses || []);
+        }
+      } catch (err) {
+        console.error("Group expenses error:", err);
+
+        if (isMounted) {
+          setExpensesError(
+            err.message || "Something went wrong"
+          );
+        }
+      } finally {
+        if (isMounted) {
+          setExpensesLoading(false);
+        }
+      }
+    };
+
+    fetchGroupExpenses();
+
+    return () => {
+      isMounted = false;
+    };
+  }, [groupId, navigate, retry]);
+
+  // Logout
   const handleLogout = () => {
     localStorage.removeItem("token");
     localStorage.removeItem("user");
     navigate("/login");
   };
 
+  // Format date
   const formatDate = (date) => {
     if (!date) return "Not available";
 
@@ -89,8 +158,24 @@ function GroupDetails() {
     });
   };
 
+  // Format currency
+  const formatCurrency = (amount) => {
+    return Number(amount || 0).toLocaleString("en-IN", {
+      style: "currency",
+      currency: "INR",
+      minimumFractionDigits: 2,
+    });
+  };
+
+  // Group creator
   const groupCreator = members.find(
-    (member) => member.id === group?.created_by
+    (member) => Number(member.id) === Number(group?.created_by)
+  );
+
+  // Total group expenses
+  const totalGroupExpenses = expenses.reduce(
+    (total, expense) => total + Number(expense.amount || 0),
+    0
   );
 
   return (
@@ -133,7 +218,9 @@ function GroupDetails() {
         {loading && (
           <div className="group-section">
             <h2>Loading group details...</h2>
-            <p>Please wait while we fetch your group information.</p>
+            <p>
+              Please wait while we fetch your group information.
+            </p>
           </div>
         )}
 
@@ -161,12 +248,14 @@ function GroupDetails() {
           <>
             {/* Group Heading */}
             <header className="group-details-header">
+
               <div className="group-header-left">
                 <Link to="/groups" className="group-back-link">
                   ← Back to Groups
                 </Link>
 
                 <div className="group-title-section">
+
                   <div className="group-title-icon">
                     👥
                   </div>
@@ -182,17 +271,19 @@ function GroupDetails() {
                       Created on {formatDate(group.created_at)}
                     </p>
                   </div>
+
                 </div>
               </div>
 
               <button
                 className="group-add-expense"
                 onClick={() =>
-                  alert("Group expense functionality is coming next!")
+                  alert("Add Expense form coming next!")
                 }
               >
                 + Add Expense
               </button>
+
             </header>
 
             {/* Summary Cards */}
@@ -205,16 +296,28 @@ function GroupDetails() {
               </div>
 
               <div className="group-summary-card">
-                <span>Created On</span>
-                <strong>{formatDate(group.created_at)}</strong>
-                <small>Group creation date</small>
+                <span>Total Group Expenses</span>
+
+                <strong>
+                  {expensesLoading
+                    ? "Loading..."
+                    : formatCurrency(totalGroupExpenses)}
+                </strong>
+
+                <small>
+                  {expenses.length} recorded{" "}
+                  {expenses.length === 1 ? "expense" : "expenses"}
+                </small>
               </div>
 
               <div className="group-summary-card">
                 <span>Group Creator</span>
+
                 <strong>
-                  {groupCreator?.name || `User #${group.created_by}`}
+                  {groupCreator?.name ||
+                    `User #${group.created_by}`}
                 </strong>
+
                 <small>Created this group</small>
               </div>
 
@@ -224,32 +327,123 @@ function GroupDetails() {
             <section className="group-section">
 
               <div className="group-section-header">
+
                 <div>
                   <h2>Group Expenses</h2>
-                  <p>Track expenses shared by group members</p>
+                  <p>
+                    Track expenses shared by group members
+                  </p>
                 </div>
 
                 <button
                   className="group-section-action"
                   onClick={() =>
-                    alert("Group expense functionality is coming next!")
+                    alert("Add Expense form coming next!")
                   }
                 >
                   + Add Expense
                 </button>
+
               </div>
 
               <div className="expense-list">
-                <div className="expense-item">
-                  <div className="expense-icon">💳</div>
 
-                  <div className="expense-info">
-                    <strong>No expenses yet</strong>
-                    <span>
-                      Start adding expenses to track shared spending.
-                    </span>
+                {/* Expenses Loading */}
+                {expensesLoading && (
+                  <div className="expense-item">
+                    <div className="expense-info">
+                      <strong>Loading expenses...</strong>
+                      <span>
+                        Fetching your group expense history.
+                      </span>
+                    </div>
                   </div>
-                </div>
+                )}
+
+                {/* Expenses Error */}
+                {!expensesLoading && expensesError && (
+                  <div className="expense-item">
+                    <div className="expense-info">
+                      <strong>Unable to load expenses</strong>
+                      <span>{expensesError}</span>
+                    </div>
+
+                    <button
+                      className="group-section-action"
+                      onClick={() =>
+                        setRetry((current) => current + 1)
+                      }
+                    >
+                      Retry
+                    </button>
+                  </div>
+                )}
+
+                {/* Empty State */}
+                {!expensesLoading &&
+                  !expensesError &&
+                  expenses.length === 0 && (
+                    <div className="expense-item">
+
+                      <div className="expense-icon">
+                        💳
+                      </div>
+
+                      <div className="expense-info">
+                        <strong>No expenses yet</strong>
+
+                        <span>
+                          Start adding expenses to track shared spending.
+                        </span>
+                      </div>
+
+                    </div>
+                  )}
+
+                {/* Actual Expenses */}
+                {!expensesLoading &&
+                  !expensesError &&
+                  expenses.map((expense) => (
+                    <div
+                      className="expense-item"
+                      key={expense.id}
+                    >
+
+                      <div className="expense-icon">
+                        💳
+                      </div>
+
+                      <div className="expense-info">
+
+                        <strong>{expense.title}</strong>
+
+                        <span>
+                          Paid by {expense.paid_by_name}
+                        </span>
+
+                        <span>
+                          {expense.category} ·{" "}
+                          {expense.split_type
+                            ?.charAt(0)
+                            .toUpperCase() +
+                            expense.split_type?.slice(1)}{" "}
+                          split
+                        </span>
+
+                        <span>
+                          {formatDate(expense.expense_date)} ·{" "}
+                          {expense.splits?.length || 0} participants
+                        </span>
+
+                      </div>
+
+                      <div className="expense-amount">
+                        {formatCurrency(expense.amount)}
+                      </div>
+
+                    </div>
+                  ))}
+
               </div>
 
             </section>
@@ -258,11 +452,16 @@ function GroupDetails() {
             <section className="group-section">
 
               <div className="group-section-header">
+
                 <div>
                   <h2>Members</h2>
+
                   <p>
                     {members.length}{" "}
-                    {members.length === 1 ? "person" : "people"} in this group
+                    {members.length === 1
+                      ? "person"
+                      : "people"}{" "}
+                    in this group
                   </p>
                 </div>
 
@@ -272,19 +471,27 @@ function GroupDetails() {
                     setShowMembers((current) => !current)
                   }
                 >
-                  {showMembers ? "Hide Details" : "View Details"}
+                  {showMembers
+                    ? "Hide Details"
+                    : "View Details"}
                 </button>
+
               </div>
 
               <div className="members-list">
+
                 {members.map((member) => (
-                  <div className="member-item" key={member.id}>
+                  <div
+                    className="member-item"
+                    key={member.id}
+                  >
 
                     <div className="member-avatar">
                       {member.name?.charAt(0).toUpperCase() || "U"}
                     </div>
 
                     <div className="member-info">
+
                       <strong>{member.name}</strong>
 
                       {showMembers && (
@@ -292,9 +499,10 @@ function GroupDetails() {
                           Joined on {formatDate(member.joined_at)}
                         </span>
                       )}
+
                     </div>
 
-                    {member.id === group.created_by && (
+                    {Number(member.id) === Number(group.created_by) && (
                       <span className="you-badge">
                         Creator
                       </span>
@@ -302,6 +510,7 @@ function GroupDetails() {
 
                   </div>
                 ))}
+
               </div>
 
             </section>
